@@ -1,8 +1,13 @@
 # Packages
 .pdx206_packages:
   packages: &pdx206_packages
-    - adaptation-sony-pdx206
+    # The adaptation-sony-pdx206 metapackage is intentionally not installed: it
+    # is nothing but a dependency list, and it hard-pins adaptation-hybris-api30-phone,
+    # which conflicts with the api32 stack selected below. We install what it
+    # would have pulled in instead. -configs carries the actual device files
+    # (phoc.ini, udev rule, BT address helper, FDE marker) and is api-agnostic.
     - adaptation-sony-pdx206-configs
+    - linux-bootimage-sony-pdx206
 
 # Devices
 pdx206-phosh:
@@ -10,5 +15,10 @@ pdx206-phosh:
   arch: arm64
   edition: phosh
   variant: phone
-  apilevel: 30
+  # api30 (Android 11) was chosen when this port was written. The device's
+  # stock vendor is now Android 12 (58.2.A.10.126), and Sony no longer serves
+  # Android 11 for it, so api30 means an older GSI on newer vendor -- the
+  # unsupported Treble direction. api32 matches the vendor that is actually
+  # on the phone.
+  apilevel: 32
   packages: *pdx206_packages
